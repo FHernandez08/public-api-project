@@ -4,8 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Jokes</title>
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-    
+    <h1>Random Jokes</h1>
+    <div id="joke-form">
+        <form action="/response" method="post">
+            <h3>Choose the following to create your joke!</h3>
+
+            <section id="category-section">
+                <p>Choose category or more:</p>
+                <div class="options-grid">
+                    <% firstData.forEach(option => { %>
+                    <input type="checkbox" name="<%= option.value %>" id="<%= option.id %>">
+                    <label for="<%= option.id %>"><%= option.label %></label>
+                    <% }); %>
+                </div>
+            </section>
+
+            <section id="blacklist-options">
+                <p>Choose jokes to blacklist:</p>
+                <div class="options-grid">
+                    <% secondData.forEach(option => { %>
+                    <input type="checkbox" name="<%= option.value %>" id="<%= option.id %>">
+                    <label for="<%= option.id %>"><%= option.label %></label>
+                    <% }); %>
+                </div>
+            </section>
+
+            <button type="submit" id="submitResponse">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
