@@ -16,7 +16,7 @@
                 <p>Choose category or more:</p>
                 <div class="options-grid">
                     <% firstData.forEach(option => { %>
-                    <input type="checkbox" name="<%= option.value %>" id="<%= option.id %>">
+                    <input type="checkbox" name="category" id="<%= option.id %>">
                     <label for="<%= option.id %>"><%= option.label %></label>
                     <% }); %>
                 </div>
@@ -26,7 +26,7 @@
                 <p>Choose jokes to blacklist:</p>
                 <div class="options-grid">
                     <% secondData.forEach(option => { %>
-                    <input type="checkbox" name="<%= option.value %>" id="<%= option.id %>">
+                    <input type="checkbox" name="blacklistCategory" id="<%= option.id %>">
                     <label for="<%= option.id %>"><%= option.label %></label>
                     <% }); %>
                 </div>
@@ -35,5 +35,16 @@
             <button type="submit" id="submitResponse">Submit</button>
         </form>
     </div>
+
+    <% if (joke && typeof joke !== "undefined") { %>
+        <section id="joke-result">
+            <% if (locals.joke.type === "single") { %>
+                <h2><%= joke.joke %></h2>
+            <% } else { %>
+                <p><%= joke.setup %></p>
+                <p><%= joke.delivery %></p>
+                <% } %>
+        </section>
+        <% } %>
 </body>
 </html>

@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
-const API_URL = "https://v2.jokeapi.dev/"
+const API_URL = "https://v2.jokeapi.dev/joke"
 
 // main route = this will be starting place of my app - it will use the index.ejs to show the webpage
 app.get("/", (req, res) => {
@@ -34,14 +34,56 @@ app.get("/", (req, res) => {
 
     const dataToSend = {
         firstData: categoryOptions,
-        secondData: blacklistOptions
+        secondData: blacklistOptions,
+        joke: null
     }
 
     res.render("index", dataToSend);
 });
 
 
+app.post("/response", async (req, res) => {
+    try {
+        let categoryChoices = req.body.category;
+        let blackListChoices = req.body.blacklistCategory || [];
 
+        if (!Array.isArray(categoryChoices)) {
+            categoryChoices = [categoryChoices];
+        }
+
+        if (!Array.isArray(blackListChoices)) {
+            blackListChoices = [blackListChoices];
+        }
+
+        // this is to determine if Any is chosen or not
+        // if Any chosen, does NOT require the rest
+        if (categoryChoices.includes("Any")) {
+            categoryPath = "Any";
+        }
+        else {
+            categoryPath = categoryChoices.join(",");
+        }
+
+        // this would determine adding the options checked for the blacklist flags because it seems to be optional
+        // if one or more choices are selected, they are added to the URL sent, if NONE --> then nothing is attached
+        let url = `${API_URL}/${categoryPath}`;
+        if (blackListChoices.length > 0) {
+            url += `?blacklistFlags${blackListChoices.join(',')};`
+        }
+
+        const result = axios.get(url);
+        console.log(result);
+
+        res.render("index", {
+            firstData: categoryChoices,
+            secondData: blackListChoices,
+            joke: result
+        });
+    }
+    catch (err) {
+        res.render("index.ejs", { err: "No activities matched your criteria!" })
+    }
+})
 
 
 app.listen(port, () => {
