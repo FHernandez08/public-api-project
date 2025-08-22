@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
     const categoryOptions = [
         {id: 1, value: 'Any', label: 'Any'},
         {id: 2, value: 'Programming', label: 'Programming'},
-        {id: 3, value: 'Miscellaneous', label: 'Misc'},
+        {id: 3, value: 'Misc', label: 'Miscellaneous'},
         {id: 4, value: 'Dark', label: 'Dark'},
         {id: 5, value: 'Pun', label: 'Pun'},
         {id: 6, value: 'Spooky', label: 'Spooky'},
@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 });
 
 
-app.post("/response", async (req, res) => {
+app.post("/", async (req, res) => {
     try {
         let categoryChoices = req.body.category;
         let blackListChoices = req.body.blacklistCategory || [];
@@ -68,16 +68,16 @@ app.post("/response", async (req, res) => {
         // if one or more choices are selected, they are added to the URL sent, if NONE --> then nothing is attached
         let url = `${API_URL}/${categoryPath}`;
         if (blackListChoices.length > 0) {
-            url += `?blacklistFlags${blackListChoices.join(',')};`
+            url += `?blacklistFlags${blackListChoices.join(',')}`;
         }
 
-        const result = axios.get(url);
-        console.log(result);
+        const { data } = await axios.get(url);
+        console.log('Joke payload:', data);
 
         res.render("index", {
             firstData: categoryChoices,
             secondData: blackListChoices,
-            joke: result
+            joke: data,
         });
     }
     catch (err) {
